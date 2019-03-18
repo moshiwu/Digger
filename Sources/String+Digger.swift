@@ -7,12 +7,9 @@
 //  Copyright © 2017年 github.cornerant. All rights reserved.
 //
 
-
 // String + md5 form https://github.com/onevcat/Kingfisher/Sting+md5
 
-
 import Foundation
-
 
 public struct StringProxy {
     fileprivate let base: String
@@ -26,13 +23,11 @@ extension String {
     public var kf: CompatibleType {
         return StringProxy(proxy: self)
     }
-    
 }
 
 extension StringProxy {
     var md5: String {
         if let data = base.data(using: .utf8, allowLossyConversion: true) {
-            
             let message = data.withUnsafeBytes { bytes -> [UInt8] in
                 return Array(UnsafeBufferPointer(start: bytes, count: data.count))
             }
@@ -51,7 +46,6 @@ extension StringProxy {
         }
     }
 }
-
 
 /** array of bytes, little-endian representation */
 func arrayOfBytes<T>(_ value: T, length: Int? = nil) -> [UInt8] {
@@ -79,16 +73,13 @@ extension Int {
     func bytes(_ totalBytes: Int = MemoryLayout<Int>.size) -> [UInt8] {
         return arrayOfBytes(self, length: totalBytes)
     }
-    
 }
 
 extension NSMutableData {
-    
     /** Convenient way to append bytes */
     func appendBytes(_ arrayOfBytes: [UInt8]) {
         append(arrayOfBytes, length: arrayOfBytes.count)
     }
-    
 }
 
 protocol HashProtocol {
@@ -99,7 +90,6 @@ protocol HashProtocol {
 }
 
 extension HashProtocol {
-    
     func prepare(_ len: Int) -> Array<UInt8> {
         var tmpMessage = message
         
@@ -137,7 +127,6 @@ func toUInt32Array(_ slice: ArraySlice<UInt8>) -> Array<UInt32> {
 }
 
 struct BytesIterator: IteratorProtocol {
-    
     let chunkSize: Int
     let data: [UInt8]
     
@@ -166,15 +155,14 @@ struct BytesSequence: Sequence {
 }
 
 func rotateLeft(_ value: UInt32, bits: UInt32) -> UInt32 {
-    return ((value << bits) & 0xFFFFFFFF) | (value >> (32 - bits))
+    return ((value << bits) & 0xffffffff) | (value >> (32 - bits))
 }
 
 class MD5: HashProtocol {
-    
     static let size = 16 // 128 / 8
     let message: [UInt8]
     
-    init (_ message: [UInt8]) {
+    init(_ message: [UInt8]) {
         self.message = message
     }
     
@@ -233,7 +221,7 @@ class MD5: HashProtocol {
             var dTemp: UInt32 = 0
             
             // Main loop
-            for j in 0 ..< sines.count {
+            for j in 0..<sines.count {
                 var g = 0
                 var F: UInt32 = 0
                 
@@ -285,16 +273,8 @@ class MD5: HashProtocol {
     }
 }
 
-extension NSString{
-    
-    var md5: NSString{
-        
+extension NSString {
+    var md5: NSString {
         return ((self as String).md5 as NSString)
     }
-    
 }
-
-
-
-
-

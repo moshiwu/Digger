@@ -24,7 +24,7 @@ extension DiggerDelegate: URLSessionDataDelegate, URLSessionDelegate {
         // the file has been downloaded
         if DiggerCache.isFileExist(atPath: DiggerCache.cachePath(url: url)) {
             let cachesURL = URL(fileURLWithPath: DiggerCache.cachePath(url: url))
-            let errorInfo = ["theFileHasbeenDownloaded": cachesURL]
+            let errorInfo = [kDiggerUserInfoCacheURLKey: cachesURL]
             let error = NSError(domain: DiggerErrorDomain, code: DiggerError.fileIsExist.rawValue, userInfo: errorInfo)
             notifyCompletionCallback(Result.failure(error), diggerSeed)
             return
@@ -46,12 +46,15 @@ extension DiggerDelegate: URLSessionDataDelegate, URLSessionDelegate {
         }
         
         // rangeString    String    "bytes 9660646-72300329/72300330"
-        if let totalBytesString = responseHeaders["Content-Range"]?.components(separatedBy: "-").last?.components(separatedBy: "/").last,
+        
+        let contentRange = responseHeaders["Content-Range"] ?? responseHeaders["content-range"]
+        
+        if let totalBytesString = contentRange?.components(separatedBy: "-").last?.components(separatedBy: "/").last,
             let totalBytes = Int64(totalBytesString) {
             diggerSeed.progress.totalUnitCount = totalBytes
         }
         
-        if let completedBytesString = responseHeaders["Content-Range"]?.components(separatedBy: "-").first?.components(separatedBy: " ").last,
+        if let completedBytesString = contentRange?.components(separatedBy: "-").first?.components(separatedBy: " ").last,
             let completedBytes = Int64(completedBytesString) {
             diggerSeed.progress.completedUnitCount = completedBytes
         }

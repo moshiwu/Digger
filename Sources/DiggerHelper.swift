@@ -18,6 +18,8 @@ public enum Result<T> {
 // MARK: -  error help
 
 public let DiggerErrorDomain = "com.github.cornerAnt.DiggerErrorDomain"
+public let kDiggerUserInfoCacheURLKey = "theFileHasbeenDownloaded"
+
 public enum DiggerError: Int {
     case badURL = 9981
     case fileIsExist = 9982

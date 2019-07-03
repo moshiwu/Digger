@@ -23,11 +23,16 @@ extension DiggerDelegate: URLSessionDataDelegate, URLSessionDelegate {
         
         // the file has been downloaded
         if DiggerCache.isFileExist(atPath: DiggerCache.cachePath(url: url)) {
-            let cachesURL = URL(fileURLWithPath: DiggerCache.cachePath(url: url))
-            let errorInfo = [kDiggerUserInfoCacheURLKey: cachesURL]
-            let error = NSError(domain: DiggerErrorDomain, code: DiggerError.fileIsExist.rawValue, userInfo: errorInfo)
-            notifyCompletionCallback(Result.failure(error), diggerSeed)
-            return
+            if self.manager?.existsFileAsSuccess == true {
+                notifyCompletionCallback(Result.success(diggerSeed.cacheFileURL), diggerSeed)
+                return
+            } else {
+                let cachesURL = URL(fileURLWithPath: DiggerCache.cachePath(url: url))
+                let errorInfo = [kDiggerUserInfoCacheURLKey: cachesURL]
+                let error = NSError(domain: DiggerErrorDomain, code: DiggerError.fileIsExist.rawValue, userInfo: errorInfo)
+                notifyCompletionCallback(Result.failure(error), diggerSeed)
+                return
+            }
         }
         /// status code
         if let statusCode = (response as? HTTPURLResponse)?.statusCode,

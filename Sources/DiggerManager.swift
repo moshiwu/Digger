@@ -46,6 +46,7 @@ open class DiggerManager: DiggerManagerProtocol {
     public static var shared = DiggerManager(name: digger)
     public var logLevel: LogLevel = .high
     open var startDownloadImmediately = true
+    open var existsFileAsSuccess = true
     open var timeout: TimeInterval = 100
     fileprivate var diggerSeeds = [URL: DiggerSeed]()
     fileprivate var session: URLSession
